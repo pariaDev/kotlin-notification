@@ -1,0 +1,54 @@
+package com.example.notification
+
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.graphics.Color
+import android.os.Build
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import kotlinx.android.synthetic.main.activity_main.*
+
+class MainActivity : AppCompatActivity() {
+
+    private val chanelId= "channel_id_example_1"
+    val name= "notification"
+    val notificationId =101
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        createNotificationChannel()
+
+        val notification =NotificationCompat.Builder(this,chanelId)
+            .setContentTitle("the title")
+            .setContentText("the des")
+//            .setSmallIcon(Reground)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        val manager=NotificationManagerCompat.from(this)
+        btn.setOnClickListener(){
+            manager.notify(notificationId, notification)
+        }
+    }
+
+    private fun createNotificationChannel(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            val decription=" notification description"
+            val importance= NotificationManager.IMPORTANCE_DEFAULT
+            val channel= NotificationChannel(chanelId,name, importance).apply {
+                description=description
+                enableLights(true)
+                lightColor=Color.YELLOW
+            }
+            val notificationManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+
+        }
+    }
+}
+
